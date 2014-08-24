@@ -1,0 +1,31 @@
+
+html, body { 
+  width: 400px; 
+  height: 100%;
+  padding-top: 5px;
+  background: url( ../imgs/bg.png ) repeat
+}
+
+button:focus, div:focus {
+  outline: none;
+}
+
+.add-btn {
+  width: 25px;
+  height: 25px;
+  font-size: 12px!important;
+  padding: 0!important;
+  margin-left: 10px;
+}
+
+.date-picker {
+  margin-left: 50px;
+}
+
+.note-checkbox {
+  width: 20px;
+}
+
+.note-content {
+  height: 20px;
+}

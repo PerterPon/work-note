@@ -1,0 +1,15 @@
+{
+  "name": "Work Note",
+  "version": "3.1",
+  "manifest_version": 2,
+  "description": "适用于记录日常工作笔记",
+  "browser_action": {
+    "default_icon"  : "icon.png",
+    "default_popup" : "index.html"
+  },
+  "permissions": [
+    "cookies",
+    "http://gitlab.alibaba-inc.com/",
+    "http://alibaba-inc.com/"
+  ]
+}
