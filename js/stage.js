@@ -8,13 +8,13 @@
 "use strict"
 
 var config = {
-  host : 'http://perterpon.wicp.net'
+  host : 'http://121.40.160.64:8000'
 };
 
 var tableData = null;
 
 $( function() {
-  initDomEvent()
+  initDomEvent();
   loadData();
 } );
 
@@ -34,15 +34,13 @@ function initDomEvent() {
  * @return {[type]} [description]
  */
 function loadData () {
-  var date = moment().format( 'YYYY-MM-DD');
   var host = config.host;
+  var date = moment().format( 'YYYY-MM-DD' );
   $.ajax( {
     url : host + '/note/' + date,
     success : function( data ) {
-      tableData = data[ 0 ] || {
-        notes : []
-      };
-      drawTable( tableData.notes );
+      tableData = data;
+      drawTable( tableData );
     }
   } );
 }
@@ -60,12 +58,12 @@ function drawTable ( data ) {
   var $tr    = null;
   for( i = 0, l = data.length; i < l; i ++ ) {
     $tr  =
-      '<tr>\
+      '<tr data-id="'+ data[ i ].id +'">\
         <td class="note-checkbox">\
           <input type="checkbox"\
       ';
     var done = data[ i ].done;
-    if( 'true' === done ) {
+    if( 'y' === done ) {
       $tr += ' checked';
     }
     $tr +=
@@ -92,11 +90,17 @@ function drawTable ( data ) {
  */
 function onAddBtnClick ( event ) {
   event.preventDefault();
-  tableData.notes.unshift( {
-    content : '',
-    done    : 'false'
+  $.ajax( {
+    url  : config.host + '/note',
+    type : 'POST',
+    data : {
+      content : '',
+      done    : 'n'
+    },
+    success : function () {
+      loadData(); 
+    }
   } );
-  drawTable( tableData.notes );
 }
 
 /**
@@ -116,14 +120,16 @@ function onContentFocus( event ) {
  * @return {[type]}       [description]
  */
 function onContentBulr( event ) {
-  var $this   = $( this );
-  var $tr     = $this.parent().parent();
-  var index   = $tr.index();
-  var content = $this.text();
+  var $this    = $( this );
+  var $tr      = $this.parent().parent();
+  var index    = $tr.index();
+  var content  = $this.text();
+  var id       = $tr.data( 'id' );
   $this.removeAttr( 'contenteditable' );
-  tableData.notes[ index ].content = content;
-  updateDate();
-  }
+  var item     = tableData[ index ];
+  item.content = content;
+  updateDate( item );
+}
 
 /**
  * [onCheckChange description]
@@ -134,23 +140,23 @@ function onCheckChange( event ) {
   var $this = $( this );
   var $tr   = $this.parent().parent();
   var index = $tr.index();
-  tableData.notes[ index ].done = this.checked.toString();
-  updateDate();
+  var item  = tableData[ index ];
+  item.done = this.checked ? 'y' : 'n';
+  updateDate( item );
 }
 
 /**
  * [updateDate description]
  * @return {[type]} [description]
  */
-function updateDate() {
+function updateDate( data ) {
+  var id   = data.id;
   var date = moment().format( 'YYYY-MM-DD' );
   var host = config.host;
-  tableData.date = date;
-  tableData.is_delete = 'n';
   $.ajax( {
-    url  : host + '/note/' + date,
-    type : 'POST',
-    data : tableData,
+    url  : host + '/note/' + id,
+    type : 'PUT',
+    data : data,
     success : function(){
       loadData();
     }
