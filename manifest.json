@@ -8,8 +8,6 @@
     "default_popup" : "index.html"
   },
   "permissions": [
-    "cookies",
-    "http://gitlab.alibaba-inc.com/",
-    "http://alibaba-inc.com/"
+    "cookies"
   ]
 }
